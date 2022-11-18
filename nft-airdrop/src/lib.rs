@@ -126,9 +126,27 @@ pub trait NftAirdrop: rewards::RewardsModule + views::ViewsModule {
 
     #[only_owner]
     #[endpoint(withdrawAll)]
-    fn withdraw_all(&self) {
-        let amount = self.blockchain().get_sc_balance(&TokenIdentifier::egld(), 0);
-        self.send().direct(&self.blockchain().get_owner_address(), &TokenIdentifier::egld(), 0, &amount, b"panic withdraw");
+    fn withdraw_all(
+        &self,
+        #[var_args] opt_token_identifier: OptionalValue<TokenIdentifier>,
+        #[var_args] opt_token_nonce: OptionalValue<u64>
+    ) {
+        let token_identifier = opt_token_identifier
+            .into_option()
+            .unwrap_or_else(|| TokenIdentifier::egld());
+
+        let token_nonce = if token_identifier.is_egld() {
+            0
+        } else {
+            opt_token_nonce
+                .into_option()
+                .unwrap_or_default()
+        };
+
+        let owner = self.blockchain().get_owner_address();
+        let balance = self.blockchain().get_sc_balance(&token_identifier, token_nonce);
+        require!(balance > 0, "Nothing to withdraw.");
+        self.send().direct(&owner, &token_identifier, token_nonce, &balance, b"Emergency withdraw");
     }
 
     fn decimal_to_ascii(&self, mut number: u32) -> ManagedBuffer {
