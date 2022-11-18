@@ -1,0 +1,152 @@
+{
+    "name": "deposit",
+    "steps": [
+        {
+            "step": "externalSteps",
+            "path": "init.scen.json"
+        },
+        {
+            "step": "setState",
+            "currentBlockInfo": {
+                "blockTimestamp": "100,000"
+            }
+        },
+        {
+            "step": "scCall",
+            "txId": "deposit-wrong",
+            "tx": {
+                "from": "address:owner",
+                "to": "sc:nft-airdrop",
+                "function": "addRewardsCheckpoint",
+                "arguments": [
+                    "str:TC6tMEbdGblhyzG9TTPWYUcDcoBOhTI8",
+					"4012"
+                ],
+                "gasLimit": "20,000,000",
+                "gasPrice": "0"
+            },
+            "expect": {
+                "out": [],
+                "status": "4",
+                "message": "str:Amount must be higher than 0",
+                "gas": "*",
+                "refund": "*",
+				"logs": "*"
+            }
+        },
+        {
+            "step": "scCall",
+            "txId": "deposit-ok",
+            "tx": {
+                "from": "address:owner",
+                "to": "sc:nft-airdrop",
+                "function": "addRewardsCheckpoint",
+				"egldValue": "500,000",
+                "arguments": [
+                    "str:dibgswq0weyziphhk62xgcgyluqwwmsj",
+					"1000"
+                ],
+                "gasLimit": "20,000,000",
+                "gasPrice": "0"
+            },
+            "expect": {
+                "out": [],
+                "status": "0",
+                "message": "",
+                "gas": "*",
+                "refund": "*",
+				"logs": "*"
+            }
+        },
+        {
+            "step": "scCall",
+            "txId": "deposit",
+            "tx": {
+                "from": "address:owner",
+                "to": "sc:nft-airdrop",
+                "function": "addRewardsCheckpoint",
+				"esdtValue": [{
+					"tokenIdentifier": "str:KRO-123456",
+					"nonce": "0",
+					"value": "100,000"
+				}],
+                "arguments": [
+                    "str:astt1qn0mhm405tb5ntu5sydpjjd2zsk",
+					"2000"
+                ],
+                "gasLimit": "20,000,000",
+                "gasPrice": "0"
+            },
+            "expect": {
+                "out": [],
+                "status": "0",
+                "message": "",
+                "gas": "*",
+                "refund": "*",
+				"logs": "*"
+            }
+        },
+        {
+            "step": "scCall",
+            "txId": "check-deposit",
+            "tx": {
+                "from": "address:owner",
+                "to": "sc:nft-airdrop",
+                "function": "getRewardsCheckpoint",
+                "arguments": [
+                    "str:astt1qn0mhm405tb5ntu5sydpjjd2zsk"
+                ],
+                "gasLimit": "20,000,000",
+                "gasPrice": "0"
+            },
+            "expect": {
+                "out": [
+                    "2000",
+                    "str:KRO-123456",
+                    "100000",
+                    "0"
+                ],
+                "status": "0",
+                "message": "",
+                "gas": "*",
+                "refund": "*",
+				"logs": "*"
+            }
+        },
+        {
+            "step": "checkState",
+            "accounts": {
+                "sc:nft-airdrop": {
+                    "nonce": "0",
+                    "balance": "500,000",
+                    "esdt": {
+						"str:KRO-123456": "100,000"
+                    },
+                    "storage": {
+                        "str:signer": "0x0139472eff6886771a982f3083da5d421f24c29181e63888228dc81ca60d69e1",
+                        "str:rewardsCheckpoints|str:dibgswq0weyziphhk62xgcgyluqwwmsj": {
+                            "0-total_nft_supply": "biguint:1000",
+                            "1-reward_token": "nested:str:EGLD",
+                            "2-reward_supply": "biguint:500,000",
+                            "3-reward_nonce": "u64:0"
+                        },
+                        "str:rewardsCheckpoints|str:astt1qn0mhm405tb5ntu5sydpjjd2zsk": {
+                            "0-total_nft_supply": "biguint:2000",
+                            "1-reward_token": "nested:str:KRO-123456",
+                            "2-reward_supply": "biguint:100,000",
+                            "3-reward_nonce": "u64:0"
+                        },
+                        "str:rewardsCheckpoints|str:zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz": {
+                            "0-total_nft_supply": "biguint:1000",
+                            "1-reward_token": "nested:str:EGLD",
+                            "2-reward_supply": "biguint:500,000"
+                        },
+                        "str:whitelisted|address:owner": "0x01"
+                    },
+                    "code": "file:../output/nft-airdrop.wasm"
+                },
+                "+": ""
+            }
+        }
+	]
+}

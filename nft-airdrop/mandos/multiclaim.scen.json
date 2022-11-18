@@ -1,0 +1,117 @@
+{
+    "name": "claim",
+    "steps": [
+        {
+            "step": "externalSteps",
+            "path": "deposit.scen.json"
+        },
+        {
+            "step": "setState",
+            "currentBlockInfo": {
+                "blockTimestamp": "100,000"
+            }
+        },
+        {
+            "step": "scCall",
+            "txId": "invalid-one-claim",
+            "tx": {
+                "from": "0x0139472eff6886771a982f3083da5d421f24c29181e63888228dc81ca60d69e1",
+                "to": "sc:nft-airdrop",
+                "function": "claimRewards",
+                "arguments": [
+                    "str:dibgswq0weyziphhk62xgcgyluqwwmsj",
+					"u32:100", 
+					"0x47accd2e0bbff3d986aa47843bfdee16d24e3e951387785482345ae255bf3d184e335976fff2c8ad6178bb5c834145b037d50d2d5510cc8db725535322b79406",
+					"str:astt1qn0mhm405tb5ntu5sydpjjd2zsk",
+					"u32:300", 
+					"0x296f905b7039298c1f28939aaf0bebc6212b9aef96ff68fd8afb6d2238416a9890533625cbd36df07b3c2b5f85cc08d01784af2583d1faf8246c71680fb30b08"
+                ],
+                "gasLimit": "20,000,000",
+                "gasPrice": "0"
+            },
+            "expect": {
+                "out": [],
+                "status": "4",
+                "message": "str:Invalid signature",
+                "gas": "*",
+                "refund": "*",
+				"logs": "*"
+            }
+        },
+        {
+            "step": "scCall",
+            "txId": "claim",
+            "tx": {
+                "from": "0x0139472eff6886771a982f3083da5d421f24c29181e63888228dc81ca60d69e1",
+                "to": "sc:nft-airdrop",
+                "function": "claimRewards",
+                "arguments": [
+                    "str:dibgswq0weyziphhk62xgcgyluqwwmsj",
+					"u32:100", 
+					"0x47accd2e0bbff3d986aa47843bfdee16d24e3e951387785482345ae255bf3d184e335976fff2c8ad6178bb5c834145b037d50d2d5510cc8db725535322b79406",
+					"str:astt1qn0mhm405tb5ntu5sydpjjd2zsk",
+					"u32:200", 
+					"0x296f905b7039298c1f28939aaf0bebc6212b9aef96ff68fd8afb6d2238416a9890533625cbd36df07b3c2b5f85cc08d01784af2583d1faf8246c71680fb30b08"
+                ],
+                "gasLimit": "20,000,000",
+                "gasPrice": "0"
+            },
+            "expect": {
+                "out": [],
+                "status": "0",
+                "message": "",
+                "gas": "*",
+                "refund": "*",
+				"logs": "*"
+            }
+        },
+        {
+            "step": "scCall",
+            "txId": "claim",
+            "tx": {
+                "from": "0x0139472eff6886771a982f3083da5d421f24c29181e63888228dc81ca60d69e1",
+                "to": "sc:nft-airdrop",
+                "function": "claimRewards",
+                "arguments": [
+                    "str:dibgswq0weyziphhk62xgcgyluqwwmsj",
+					"u32:100", 
+					"0x47accd2e0bbff3d986aa47843bfdee16d24e3e951387785482345ae255bf3d184e335976fff2c8ad6178bb5c834145b037d50d2d5510cc8db725535322b79406"
+                ],
+                "gasLimit": "20,000,000",
+                "gasPrice": "0"
+            },
+            "expect": {
+                "out": [],
+                "status": "4",
+                "message": "str:Already claimed rewards for this week",
+                "gas": "*",
+                "refund": "*",
+				"logs": "*"
+            }
+        },
+		{
+            "step": "checkState",
+            "accounts": {
+                "sc:nft-airdrop": {
+                    "nonce": "0",
+                    "balance": "450,000",
+                    "esdt": {
+						"str:KRO-123456": "90,000"
+                    },
+                    "storage": {
+                        "+": ""
+                    },
+                    "code": "file:../output/nft-airdrop.wasm"
+                },
+				"0x0139472eff6886771a982f3083da5d421f24c29181e63888228dc81ca60d69e1": {
+					"nonce": "3",
+					"balance": "1,050,000",
+                    "esdt": {
+						"str:KRO-123456": "10,000"
+                    }
+				},
+                "+": ""
+            }
+        }
+	]
+}

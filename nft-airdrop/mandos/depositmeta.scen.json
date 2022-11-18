@@ -1,0 +1,98 @@
+{
+    "name": "deposit",
+    "steps": [
+        {
+            "step": "externalSteps",
+            "path": "init.scen.json"
+        },
+        {
+            "step": "setState",
+            "currentBlockInfo": {
+                "blockTimestamp": "100,000"
+            }
+        },
+        {
+            "step": "scCall",
+            "txId": "deposit-ok",
+            "tx": {
+                "from": "address:owner",
+                "to": "sc:nft-airdrop",
+                "function": "addRewardsCheckpoint",
+				"esdtValue": [{
+					"tokenIdentifier": "str:LKKRO-123456",
+					"nonce": "1",
+					"value": "100,000"
+				}],
+                "arguments": [
+                    "str:dibgswq0weyziphhk62xgcgyluqwwmsj",
+					"1000"
+                ],
+                "gasLimit": "20,000,000",
+                "gasPrice": "0"
+            },
+            "expect": {
+                "out": [],
+                "status": "0",
+                "message": "",
+                "gas": "*",
+                "refund": "*",
+				"logs": "*"
+            }
+        },
+        {
+            "step": "scCall",
+            "txId": "deposit",
+            "tx": {
+                "from": "address:owner",
+                "to": "sc:nft-airdrop",
+                "function": "addRewardsCheckpoint",
+				"esdtValue": [{
+					"tokenIdentifier": "str:LKKRO-123456",
+					"nonce": "2",
+					"value": "200,000"
+				}],
+                "arguments": [
+                    "str:astt1qn0mhm405tb5ntu5sydpjjd2zsk",
+					"2000"
+                ],
+                "gasLimit": "20,000,000",
+                "gasPrice": "0"
+            },
+            "expect": {
+                "out": [],
+                "status": "0",
+                "message": "",
+                "gas": "*",
+                "refund": "*",
+				"logs": "*"
+            }
+        },
+        {
+            "step": "scCall",
+            "txId": "check-deposit",
+            "tx": {
+                "from": "address:owner",
+                "to": "sc:nft-airdrop",
+                "function": "getRewardsCheckpoint",
+                "arguments": [
+                    "str:astt1qn0mhm405tb5ntu5sydpjjd2zsk"
+                ],
+                "gasLimit": "20,000,000",
+                "gasPrice": "0"
+            },
+            "expect": {
+                "out": [
+                    "2000",
+                    "str:LKKRO-123456",
+                    "200000",
+                    "2"
+                ],
+                "status": "0",
+                "message": "",
+                "gas": "*",
+                "refund": "*",
+				"logs": "*"
+            }
+        }
+	]
+}
