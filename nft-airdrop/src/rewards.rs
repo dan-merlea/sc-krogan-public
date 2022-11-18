@@ -15,8 +15,8 @@ pub struct RewardsCheckpoint<M: ManagedTypeApi> {
 
 #[elrond_wasm::module]
 pub trait RewardsModule {
-	
-	#[payable("*")]
+    
+    #[payable("*")]
     #[endpoint(addRewardsCheckpoint)]
     fn add_rewards_checkpoint(
         &self,
@@ -30,7 +30,7 @@ pub trait RewardsModule {
         let caller = self.blockchain().get_caller();
         require!(self.whitelisted(caller).get(), "Not allowed to deposit!");
 
-		let (reward_token, reward_nonce, reward_supply) = self.call_value().payment_as_tuple();
+        let (reward_token, reward_nonce, reward_supply) = self.call_value().payment_as_tuple();
 
         require!(reward_supply > 0, "Amount must be higher than 0");
 

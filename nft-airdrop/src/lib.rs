@@ -13,9 +13,6 @@ const MAX_DATA_LEN: usize = 120;
 
 pub type Signature<M> = ManagedByteArray<M, SIGNATURE_LEN>;
 
-/// Source code for the pause module:
-/// https://github.com/ElrondNetwork/elrond-wasm-rs/blob/master/elrond-wasm-modules/src/pause.rs
-
 #[elrond_wasm::contract]
 pub trait NftAirdrop: rewards::RewardsModule + views::ViewsModule {
 
