@@ -141,7 +141,9 @@
                             "1-reward_token": "nested:str:EGLD",
                             "2-reward_supply": "biguint:500,000"
                         },
-                        "str:whitelisted|address:owner": "0x01"
+                        "str:whitelisted|address:owner": "0x01",
+                        "str:rewardsOwner|str:astt1qn0mhm405tb5ntu5sydpjjd2zsk": "address:owner",
+                        "str:rewardsOwner|str:dibgswq0weyziphhk62xgcgyluqwwmsj": "address:owner"
                     },
                     "code": "file:../output/nft-airdrop.wasm"
                 },

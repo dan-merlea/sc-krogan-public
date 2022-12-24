@@ -1,0 +1,61 @@
+{
+    "name": "claim",
+    "steps": [
+        {
+            "step": "externalSteps",
+            "path": "deposit.scen.json"
+        },
+        {
+            "step": "setState",
+            "currentBlockInfo": {
+                "blockTimestamp": "100,000"
+            }
+        },
+        {
+            "step": "scCall",
+            "txId": "claim",
+            "tx": {
+                "from": "address:owner",
+                "to": "sc:nft-airdrop",
+                "function": "removeWhitelistAddress",
+                "arguments": [
+                    "address:owner"
+                ],
+                "gasLimit": "20,000,000",
+                "gasPrice": "0"
+            },
+            "expect": {
+                "out": [],
+                "status": "0",
+                "message": "",
+                "gas": "*",
+                "refund": "*",
+				"logs": "*"
+            }
+        },
+        {
+            "step": "scCall",
+            "txId": "claim",
+            "tx": {
+                "from": "0x0139472eff6886771a982f3083da5d421f24c29181e63888228dc81ca60d69e1",
+                "to": "sc:nft-airdrop",
+                "function": "claimRewards",
+                "arguments": [
+                    "str:dibgswq0weyziphhk62xgcgyluqwwmsj",
+					"u32:100", 
+					"0x47accd2e0bbff3d986aa47843bfdee16d24e3e951387785482345ae255bf3d184e335976fff2c8ad6178bb5c834145b037d50d2d5510cc8db725535322b79406"
+                ],
+                "gasLimit": "20,000,000",
+                "gasPrice": "0"
+            },
+            "expect": {
+                "out": [],
+                "status": "4",
+                "message": "str:Not allowed to claim rewards from this project!",
+                "gas": "*",
+                "refund": "*",
+				"logs": "*"
+            }
+        }
+	]
+}

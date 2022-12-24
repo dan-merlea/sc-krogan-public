@@ -2,11 +2,12 @@
 
 elrond_wasm::imports!();
 
+mod storage;
 mod rewards;
 mod views;
+pub mod models;
 
-use elrond_wasm::api::InvalidSliceError;
-use rewards::{ManagedHash, RewardsCheckpoint};
+use models::*;
 
 const SIGNATURE_LEN: usize = 64;
 const MAX_DATA_LEN: usize = 120;
@@ -14,23 +15,15 @@ const MAX_DATA_LEN: usize = 120;
 pub type Signature<M> = ManagedByteArray<M, SIGNATURE_LEN>;
 
 #[elrond_wasm::contract]
-pub trait NftAirdrop: rewards::RewardsModule + views::ViewsModule {
+pub trait NftAirdrop: 
+    rewards::RewardsModule + 
+    views::ViewsModule +
+    storage::StorageModule
+{
 
     #[init]
     fn init(&self, signer: ManagedAddress) {
         self.signer().set_if_empty(&signer);
-    }
-
-    #[only_owner]
-    #[endpoint(changeSigner)]
-    fn change_signer(&self, new_signer: ManagedAddress) {
-        self.signer().set(&new_signer);
-    }
-
-    #[only_owner]
-    #[endpoint(whitelistAddress)]
-    fn whitelist_address(&self, new_whitelisted: ManagedAddress) {
-        self.whitelisted(new_whitelisted).set(true);
     }
 
     #[endpoint(claimRewards)]
@@ -43,15 +36,21 @@ pub trait NftAirdrop: rewards::RewardsModule + views::ViewsModule {
         let mut egld_payment_amount = BigUint::zero();
         let mut output_payments = ManagedVec::new();
         let mut last_payment = EsdtTokenPayment::no_payment();
-        
+
         for user_data in data.into_iter() {
             let (hash, 
                 amount, 
                 signature) = user_data.into_tuple();
-        
+
+            // Check if owner is present & whitelisted
+            if self.rewards_owner(&hash).is_empty() == false {
+                let owner = self.rewards_owner(&hash).get();
+                require!(self.whitelisted(owner).get(), "Not allowed to claim rewards from this project!");
+            }
+
             self.verify_signature(&caller, &hash, &amount, &signature);
             require!(!self.rewards_claimed(&caller, &hash).get(), "Already claimed rewards for this week");
-            
+
             let checkpoint_mapper = self.rewards_checkpoints(&hash);
             require!(!checkpoint_mapper.is_empty(), "Invalid root hash");
             let checkpoint: RewardsCheckpoint<Self::Api> = checkpoint_mapper.get();
@@ -176,11 +175,5 @@ pub trait NftAirdrop: rewards::RewardsModule + views::ViewsModule {
         ManagedBuffer::new_from_bytes(slice)
     }
 
-
-    fn require_result_ok(&self, result: &Result<(), InvalidSliceError>) {
-        require!(result.is_ok(), "Could not copy managed buffer to array");
-    }
-
-    #[storage_mapper("signer")]
-    fn signer(&self) -> SingleValueMapper<ManagedAddress>;
+    
 }

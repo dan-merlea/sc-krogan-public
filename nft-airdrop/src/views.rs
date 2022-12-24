@@ -1,9 +1,9 @@
 elrond_wasm::imports!();
 
-use crate::rewards::*;
+use crate::models::*;
 
 #[elrond_wasm::module]
-pub trait ViewsModule: crate::rewards::RewardsModule {
+pub trait ViewsModule: crate::rewards::RewardsModule + crate::storage::StorageModule {
     
     #[view(getRewardsCheckpoint)]
     fn get_rewards_checkpoint(&self, root_hash: &ManagedHash<Self::Api>) -> MultiValue4<BigUint, TokenIdentifier, BigUint, u64> {

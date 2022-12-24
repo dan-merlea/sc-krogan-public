@@ -12,6 +12,7 @@ elrond_wasm_node::wasm_endpoints! {
         claimRewards
         getRewardsCheckpoint
         getRewardsClaimed
+        removeWhitelistAddress
         rewardsCheckpoints
         whitelistAddress
         withdrawAll
